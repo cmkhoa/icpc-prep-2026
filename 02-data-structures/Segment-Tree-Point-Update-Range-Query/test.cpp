@@ -79,6 +79,8 @@ int main(){
     ios::sync_with_stdio(false);
     cin.tie(NULL);
 
+    // cout << "worked";
+
     int n, m;
     cin >> n >> m;
 
@@ -90,15 +92,9 @@ int main(){
 
     st.build();
 
-    while(m--){
-        int type, x, y;
-        cin >> type >> x >> y;
-
-        if (type == 1){
-            st.set(x, y);
-        }else{
-            cout << st.get(x, y) << '\n';
-        }
+    for (int i = 0; i < st.nodes.size(); i++){
+        cout << i << " : " << st.nodes[i] << '\n';
+        // cout << i << ", " << 2 * i + 1 << ", " << 2 * i + 2 << " : " << st.nodes[i] << '\n';
     }
 
     return 0;

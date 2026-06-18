@@ -29,7 +29,7 @@ struct SegTree{
         build(2 * id + 1, l, mid);
         build(2 * id + 2, mid, r);
 
-        nodes[id] = nodes[2 * id + 1] + nodes[2 * id + 2];
+        nodes[id] = min(nodes[2 * id + 1], nodes[2 * id + 2]);
     }
 
     void build(){
@@ -49,7 +49,7 @@ struct SegTree{
         set(pos, value, 2 * id + 1, l, mid);
         set(pos, value, 2 * id + 2, mid, r);
 
-        nodes[id] = nodes[2 * id + 1] + nodes[2 * id + 2]; // change this depending on problems
+        nodes[id] = min(nodes[2 * id + 1], nodes[2 * id + 2]); // change this depending on problems
     }
 
     void set(int pos, int value){
@@ -59,7 +59,7 @@ struct SegTree{
     // (l, r)
     long long get(int u, int v, int id, int l, int r){
         if (l >= v || r <= u){
-            return 0;
+            return INT64_MAX;
         }
         if (r <= v && l >= u){
             return nodes[id];
@@ -67,7 +67,7 @@ struct SegTree{
         
         int mid = (l + r) >> 1;
         
-        return get(u, v, 2 * id + 1, l, mid) + get(u, v, 2 * id + 2, mid, r);
+        return min(get(u, v, 2 * id + 1, l, mid), get(u, v, 2 * id + 2, mid, r));
     }
 
     long long get(int u, int v){
@@ -78,6 +78,8 @@ struct SegTree{
 int main(){
     ios::sync_with_stdio(false);
     cin.tie(NULL);
+
+    // cout << "worked";
 
     int n, m;
     cin >> n >> m;

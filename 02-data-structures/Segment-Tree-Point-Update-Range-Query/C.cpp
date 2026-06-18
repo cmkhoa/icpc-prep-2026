@@ -8,7 +8,7 @@ int a[N];
 
 struct SegTree{
     int size;
-    vector<long long> nodes;
+    vector<int> nodes, count;
 
     SegTree(int n){
         size = 1;
@@ -17,19 +17,27 @@ struct SegTree{
         }
 
         nodes.assign(2 * size, 0);
+        count.assign(2 * size, 1);
     }
 
     void build(int id, int l, int r){
         if (r - l == 1){
             nodes[id] = a[l];
+            count[id] = 1;
             return;
         }
 
         int mid = (l + r) >> 1;
         build(2 * id + 1, l, mid);
         build(2 * id + 2, mid, r);
+        
+        if (nodes[2 * id + 1] == nodes[2 * id + 2]){
+            count[id] = count[2 * id + 1] + count[2 * id + 2];
+        }else{
+            count[id] = (nodes[2 * id + 1] < nodes[2 * id + 2] ? count[2 * id + 1] : count[2 * id + 2]);
+        }
 
-        nodes[id] = nodes[2 * id + 1] + nodes[2 * id + 2];
+        nodes[id] = min(nodes[2 * id + 1], nodes[2 * id + 2]);
     }
 
     void build(){
@@ -41,6 +49,7 @@ struct SegTree{
         if (pos < l || pos >= r) return;
         if (r - l == 1){
             nodes[id] = value;
+            count[id] = 1;
             return;
         }
 
@@ -49,7 +58,13 @@ struct SegTree{
         set(pos, value, 2 * id + 1, l, mid);
         set(pos, value, 2 * id + 2, mid, r);
 
-        nodes[id] = nodes[2 * id + 1] + nodes[2 * id + 2]; // change this depending on problems
+        if (nodes[2 * id + 1] == nodes[2 * id + 2]){
+            count[id] = count[2 * id + 1] + count[2 * id + 2];
+        }else{
+            count[id] = (nodes[2 * id + 1] < nodes[2 * id + 2] ? count[2 * id + 1] : count[2 * id + 2]);
+        }
+
+        nodes[id] = min(nodes[2 * id + 1], nodes[2 * id + 2]); // change this depending on problems
     }
 
     void set(int pos, int value){
@@ -57,20 +72,31 @@ struct SegTree{
     }
     
     // (l, r)
-    long long get(int u, int v, int id, int l, int r){
+    pair<int, int> get(int u, int v, int id, int l, int r){
         if (l >= v || r <= u){
-            return 0;
+            return {INT_MAX, 0};
         }
         if (r <= v && l >= u){
-            return nodes[id];
+            return make_pair(nodes[id], count[id]);
         }
         
         int mid = (l + r) >> 1;
+        pair<int, int> L = get(u, v, 2 * id + 1, l, mid);
+        pair<int, int> R = get(u, v, 2 * id + 2, mid, r);
+
+        int mini = min(L.first, R.first);
+        int count = 1;
+
+        if (L.first == R.first){
+            count = L.second + R.second;
+        }else{
+            count = (L.first < R.first ? L.second : R.second);
+        }
         
-        return get(u, v, 2 * id + 1, l, mid) + get(u, v, 2 * id + 2, mid, r);
+        return make_pair(mini, count);
     }
 
-    long long get(int u, int v){
+    pair<int, int> get(int u, int v){
         return get(u, v, 0, 0, size);
     }
 };  
@@ -97,7 +123,8 @@ int main(){
         if (type == 1){
             st.set(x, y);
         }else{
-            cout << st.get(x, y) << '\n';
+            auto res = st.get(x, y);
+            cout << res.first << " " << res.second << '\n';
         }
     }
 
