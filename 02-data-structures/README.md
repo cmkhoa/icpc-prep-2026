@@ -5,3 +5,5 @@ Topics from [youkn0wwho.academy/topic-list](https://youkn0wwho.academy/topic-lis
 ## Progress
 
 <!-- Add subtopics here as you work through them. -->
+- [ ] Segment Tree
+  - [ ] 
