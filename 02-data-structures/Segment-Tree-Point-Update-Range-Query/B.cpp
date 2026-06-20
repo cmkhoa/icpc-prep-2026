@@ -1,3 +1,5 @@
+// https://codeforces.com/edu/course/2/lesson/4/1/practice/contest/273169/problem/B
+
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -78,8 +80,6 @@ struct SegTree{
 int main(){
     ios::sync_with_stdio(false);
     cin.tie(NULL);
-
-    // cout << "worked";
 
     int n, m;
     cin >> n >> m;

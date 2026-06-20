@@ -13,7 +13,7 @@ struct SegTree{
 
     void build(int id, int l, int r){
         if (r - l == 1){
-            nodes[id] = a[l];
+            nodes[id] = a[l]; // problematic? a only contains n elements
             return;
         }
 
