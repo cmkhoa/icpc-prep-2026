@@ -1,3 +1,5 @@
+// https://codeforces.com/edu/course/2/lesson/4/2/practice/contest/273278/problem/B
+
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -21,7 +23,7 @@ struct SegTree{
 
     void build(int id, int l, int r){
         if (r - l == 1){
-            if (l < N) nodes[id] = a[l];
+            nodes[id] = (l < N ? a[l] : 0);
             return;
         }
 
@@ -41,6 +43,7 @@ struct SegTree{
         if (pos < l || pos >= r) return;
         if (r - l == 1){
             nodes[id] = value;
+            a[l] = value;
             return;
         }
 
@@ -72,6 +75,24 @@ struct SegTree{
 
     long long get(int u, int v){
         return get(u, v, 0, 0, size);
+    }   
+
+    int find(int k, int id, int l, int r){
+        // cout << l << " " << r << '\n';
+        if (r - l == 1){
+            return l;
+        }
+        
+        int mid = (l + r) >> 1;
+        if (k > nodes[2 * id + 1]){
+            return find(k - nodes[2 * id + 1], 2 * id + 2, mid, r);
+        }else{
+            return find(k, 2 * id + 1, l, mid);
+        }
+    }
+
+    int find(int k){
+        return find(k + 1, 0, 0, size);
     }
 };  
 
@@ -91,13 +112,17 @@ int main(){
     st.build();
 
     while(m--){
-        int type, x, y;
-        cin >> type >> x >> y;
+        int type;
+        cin >> type;
 
         if (type == 1){
-            st.set(x, y);
+            int pos;
+            cin >> pos; 
+            st.set(pos, 1 - a[pos]);
         }else{
-            cout << st.get(x, y) << '\n';
+            int k;
+            cin >> k;
+            cout << st.find(k) << '\n';
         }
     }
 

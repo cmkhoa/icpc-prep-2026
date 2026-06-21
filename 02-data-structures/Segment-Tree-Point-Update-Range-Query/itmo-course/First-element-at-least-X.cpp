@@ -16,7 +16,7 @@ struct SegTree{
             size *= 2;
         }
 
-        nodes.assign(2 * size, 0);
+        nodes.assign(2 * size, INT_MAX);
     }
 
     void build(int id, int l, int r){
@@ -29,7 +29,7 @@ struct SegTree{
         build(2 * id + 1, l, mid);
         build(2 * id + 2, mid, r);
 
-        nodes[id] = nodes[2 * id + 1] + nodes[2 * id + 2];
+        nodes[id] = min(nodes[2 * id + 1], nodes[2 * id + 2]);
     }
 
     void build(){
@@ -49,7 +49,7 @@ struct SegTree{
         set(pos, value, 2 * id + 1, l, mid);
         set(pos, value, 2 * id + 2, mid, r);
 
-        nodes[id] = nodes[2 * id + 1] + nodes[2 * id + 2]; // change this depending on problems
+        nodes[id] = min(nodes[2 * id + 1], nodes[2 * id + 2]);
     }
 
     void set(int pos, int value){
@@ -73,6 +73,27 @@ struct SegTree{
     long long get(int u, int v){
         return get(u, v, 0, 0, size);
     }
+
+    int findAtLeast(int x, int id, int l, int r){
+        // cout << l << " " << r << " " << nodes[2 * id + 1] << " " << nodes[2 * id + 2] << '\n';
+        if (r - l == 1){
+            return l;
+        }
+
+        int mid = (l + r) >> 1;
+
+        if (nodes[2 * id + 1] >= x){
+            return findAtLeast(x, 2 * id + 1, l, mid);
+        }else if (nodes[2 * id + 2] >= x){
+            return findAtLeast(x, 2 * id + 2, mid, r);
+        }else{
+            return -1;
+        }
+    }
+
+    int findAtLeast(int x){
+        return findAtLeast(x, 0, 0, size);
+    }
 };  
 
 int main(){
@@ -84,6 +105,7 @@ int main(){
 
     SegTree st(n);
 
+    fill(a, a + N, INT_MAX);
     for (int i = 0; i < n; i++){
         cin >> a[i];
     }
@@ -91,13 +113,19 @@ int main(){
     st.build();
 
     while(m--){
-        int type, x, y;
-        cin >> type >> x >> y;
+        int type;
+        cin >> type;
 
         if (type == 1){
-            st.set(x, y);
+            int pos, v;
+            cin >> pos >> v;
+
+            st.set(pos, v);
         }else{
-            cout << st.get(x, y) << '\n';
+            int x;
+            cin >> x;
+
+            cout << st.findAtLeast(x) << '\n';
         }
     }
 

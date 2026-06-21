@@ -6,7 +6,7 @@ using namespace std;
 const int N = 1e5 + 5;
 const int M = 4 * N; 
 
-int a[M];
+int a[N];
 
 struct SegTree{
     int size;
@@ -27,7 +27,7 @@ struct SegTree{
 
     void build(int id, int l, int r){
         if (r - l == 1){
-            nodes[id] = a[l];
+            nodes[id] = (l < N ? a[l] : 0);
             return;
         }
 
