@@ -1,0 +1,19 @@
+.claude/
+.vscode/
+*.dSYM/
+
+# Compiled files
+*.o
+*.a
+*.so
+*.dylib
+*.out
+
+# Executables
+a.out
+*.exe
+
+# Build artifacts
+*.dSYM
+build/
+dist/.o
