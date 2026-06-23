@@ -15,8 +15,10 @@ struct SegTree{
         while(size < n){
             size *= 2;
         }
-
-        nodes.assign(2 * size, INT_MAX);
+        
+        // size = n;
+        nodes.assign(2 * size, -1);
+        // size = n;
     }
 
     void build(int id, int l, int r){
@@ -29,7 +31,7 @@ struct SegTree{
         build(2 * id + 1, l, mid);
         build(2 * id + 2, mid, r);
 
-        nodes[id] = min(nodes[2 * id + 1], nodes[2 * id + 2]);
+        nodes[id] = max(nodes[2 * id + 1], nodes[2 * id + 2]);
     }
 
     void build(){
@@ -49,7 +51,7 @@ struct SegTree{
         set(pos, value, 2 * id + 1, l, mid);
         set(pos, value, 2 * id + 2, mid, r);
 
-        nodes[id] = min(nodes[2 * id + 1], nodes[2 * id + 2]);
+        nodes[id] = max(nodes[2 * id + 1], nodes[2 * id + 2]);
     }
 
     void set(int pos, int value){
@@ -75,20 +77,24 @@ struct SegTree{
     }
 
     int findAtLeast(int x, int id, int l, int r){
-        // cout << l << " " << r << " " << nodes[2 * id + 1] << " " << nodes[2 * id + 2] << '\n';
+        if (nodes[id] < x){
+            return -1;
+        }
+        
         if (r - l == 1){
             return l;
         }
+        // cout << l << " " << r << " " << nodes[2 * id + 1] << " " << nodes[2 * id + 2] << '\n';
 
         int mid = (l + r) >> 1;
 
-        if (nodes[2 * id + 1] >= x){
-            return findAtLeast(x, 2 * id + 1, l, mid);
-        }else if (nodes[2 * id + 2] >= x){
-            return findAtLeast(x, 2 * id + 2, mid, r);
-        }else{
-            return -1;
+        int ans = findAtLeast(x, 2 * id + 1, l, mid);
+
+        if (ans == -1){
+            ans = findAtLeast(x, 2 * id + 2, mid, r);
         }
+
+        return ans;
     }
 
     int findAtLeast(int x){
@@ -105,7 +111,7 @@ int main(){
 
     SegTree st(n);
 
-    fill(a, a + N, INT_MAX);
+    // fill(a, a + N, -1);
     for (int i = 0; i < n; i++){
         cin >> a[i];
     }
