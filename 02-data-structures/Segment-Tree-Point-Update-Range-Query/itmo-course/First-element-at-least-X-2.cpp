@@ -61,7 +61,7 @@ struct SegTree{
     // (l, r)
     long long get(int u, int v, int id, int l, int r){
         if (l >= v || r <= u){
-            return 0;
+            return -1;
         }
         if (r <= v && l >= u){
             return nodes[id];
@@ -69,7 +69,7 @@ struct SegTree{
         
         int mid = (l + r) >> 1;
         
-        return get(u, v, 2 * id + 1, l, mid) + get(u, v, 2 * id + 2, mid, r);
+        return max(get(u, v, 2 * id + 1, l, mid), get(u, v, 2 * id + 2, mid, r));
     }
 
     long long get(int u, int v){
@@ -77,7 +77,7 @@ struct SegTree{
     }
 
     int findAtLeast(int x, int id, int l, int r){
-        if (nodes[id] < x){
+        if (get(l, r) < x){
             return -1;
         }
         
@@ -96,8 +96,8 @@ struct SegTree{
         return ans;
     }
 
-    int findAtLeast(int x){
-        return findAtLeast(x, 0, 0, size);
+    int findAtLeast(int x, int l){
+        return findAtLeast(x, 0, l, size);
     }
 };  
 
@@ -127,10 +127,10 @@ int main(){
 
             st.set(pos, v);
         }else{
-            int x;
-            cin >> x;
+            int x, l;
+            cin >> x >> l;
 
-            cout << st.findAtLeast(x) << '\n';
+            cout << st.findAtLeast(x, l) << '\n';
         }
     }
 
