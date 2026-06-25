@@ -2,23 +2,27 @@
 using namespace std;
 
 const int N = 1e5 + 5;
-const int M = 4 * N; 
 
 int a[N];
 
 struct SegTree{
-    int size;
     vector<long long> sums;
+    int size;
 
     SegTree(int n){
         size = 1;
-        while(size < n) size *= 2; 
+        while(size < n) size *= 2;
+
         sums.assign(2 * size, 0);
+    }
+    
+    void f(int id){
+        sums[id] = sums[2 * id + 1] + sums[2 * id + 2];
     }
 
     void build(int id, int l, int r){
         if (r - l == 1){
-            sums[id] = a[l];
+            if (l < N) sums[id] = a[l];
             return;
         }
 
@@ -26,7 +30,7 @@ struct SegTree{
         build(2 * id + 1, l, mid);
         build(2 * id + 2, mid, r);
 
-        sums[id] = sums[2 * id + 1] + sums[2 * id + 2];
+        f(id);
     }
 
     void build(){
@@ -34,7 +38,10 @@ struct SegTree{
     }
 
     void set(int pos, int v, int id, int l, int r){
-        if (pos < l || pos >= r) return;
+        if (pos < l || pos >= r){
+            return;
+        }
+        
         if (r - l == 1){
             sums[id] = v;
             return;
@@ -44,7 +51,7 @@ struct SegTree{
         set(pos, v, 2 * id + 1, l, mid);
         set(pos, v, 2 * id + 2, mid, r);
 
-        sums[id] = sums[2 * id + 1] + sums[2 * id + 2];
+        f(id);
     }
     
     void set(int pos, int v){
@@ -52,11 +59,11 @@ struct SegTree{
     }
 
     long long get(int u, int v, int id, int l, int r){
-        if (r <= u || l >= v){
+        if (v <= l || u >= r){
             return 0;
         }
 
-        if (r <= v && l >= u){
+        if (l >= u && r <= v){
             return sums[id];
         }
 
