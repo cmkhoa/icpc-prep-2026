@@ -1,4 +1,4 @@
-// https://codeforces.com/edu/course/2/lesson/4/3/practice/contest/274545/problem/A
+// https://codeforces.com/edu/course/2/lesson/4/3/practice/contest/274545/problem/B
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -22,21 +22,21 @@ struct SegTree{
         // size = n;
     }
 
-    void build(int id, int l, int r){
+    void build(int u, int v, int id, int l, int r){
         if (r - l == 1){
-            if (l < N) nodes[id] = a[l];
+            if (l >= u && l < v) nodes[id] = 1;
             return;
         }
 
         int mid = (l + r) >> 1;
-        build(2 * id + 1, l, mid);
-        build(2 * id + 2, mid, r);
+        build(u, v, 2 * id + 1, l, mid);
+        build(u, v, 2 * id + 2, mid, r);
 
         nodes[id] = nodes[2 * id + 1] + nodes[2 * id + 2];
     }
 
-    void build(){
-        build(0, 0, size);
+    void build(int u, int v){
+        build(u, v, 0, 0, size);
     }
 
     // [l, r)
@@ -79,6 +79,23 @@ struct SegTree{
         if (v - u < 1) return 0;
         else return get(u, v, 0, 0, size);
     }
+
+    int findSum(int sum, int id, int l, int r){
+        if (sum == nodes[id] && r - l == 1){
+            return l;
+        }
+        
+        int mid = (l + r) >> 1;
+
+        if (sum - nodes[2 * id + 2] <= 0){
+            return findSum(sum, 2 * id + 2, mid, r);
+        }else{
+            return findSum(sum - nodes[2 * id + 2], 2 * id + 1, l, mid);
+        }
+    }
+    int findSum(int sum){
+        return findSum(sum, 0, 0, size);
+    }
 };  
 
 int main(){
@@ -88,21 +105,22 @@ int main(){
     int n;
     cin >> n;
 
-    SegTree st(n + 1);
+    SegTree st(n + 2);
+    st.build(1, n + 1);
 
     // fill(a, a + N, -1);
     for (int i = 0; i < n; i++){
         cin >> a[i];
     }
 
-    vector<int> ans(n, 0);
-    for (int i = 0; i < n; i++){
-        ans[i] = st.get(a[i] + 1, n + 1);
-        st.set(a[i], 1);
+    vector<int> res(n, 0);
+    for (int i = n - 1; i >= 0; i--){
+        res[i] = st.findSum(a[i] + 1);
+        st.set(res[i], 0);
     }
 
     for (int i = 0; i < n; i++)
-        cout << ans[i] << " ";
+        cout << res[i] << " ";
 
     return 0;
 }
