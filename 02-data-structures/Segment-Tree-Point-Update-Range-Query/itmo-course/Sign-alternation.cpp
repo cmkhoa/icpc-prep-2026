@@ -10,30 +10,8 @@ int a[N];
 
 
 struct SegTree{
-    struct Item{
-        long long odd = 0;
-        long long even = 0;
-    
-        void set(long long val, int r){
-            if (r){
-                odd = val;
-            }else{
-                even = val;
-            }
-        }
-    
-        Item operator+(const Item &rhs) const{
-            Item res;
-    
-            res.odd = this->odd + rhs.odd;
-            res.even = this->even + rhs.even;
-    
-            return res;
-        }
-    };
-
     int size;
-    vector<Item> nodes;
+    vector<long long> nodes;
 
     SegTree(int n){
         size = 1;
@@ -41,32 +19,31 @@ struct SegTree{
             size *= 2;
         }
 
-        nodes.assign(2 * size, Item());
-        nodes.assign(2 * size, Item());
+        nodes.assign(2 * size, 0);
     }
 
     void build(int id, int l, int r){
         if (r - l == 1){
-            nodes[id].set(a[l], l % 2);
+            nodes[id] = (l & 1 ? -a[l] : a[l]);
             return;
         }
-
+        
         int mid = (l + r) >> 1;
         build(2 * id + 1, l, mid);
         build(2 * id + 2, mid, r);
-
+        
         nodes[id] = nodes[2 * id + 1] + nodes[2 * id + 2];
     }
-
+    
     void build(){
         build(0, 0, size);
     }
-
+    
     // [l, r)
     void set(int pos, int value, int id, int l, int r){
         if (pos < l || pos >= r) return;
         if (r - l == 1){
-            nodes[id].set(value, l % 2);
+            nodes[id] = (l & 1 ? -value : value);
             return;
         }
 
@@ -79,13 +56,13 @@ struct SegTree{
     }
 
     void set(int pos, int value){
-        set(pos - 1, value, 0, 0, size);
+        set(pos, value, 0, 0, size);
     }
     
     // (l, r)
-    Item get(int u, int v, int id, int l, int r){
+    long long get(int u, int v, int id, int l, int r){
         if (l >= v || r <= u){
-            return Item();
+            return 0;
         }
         if (r <= v && l >= u){
             return nodes[id];
@@ -96,8 +73,8 @@ struct SegTree{
         return get(u, v, 2 * id + 1, l, mid) + get(u, v, 2 * id + 2, mid, r);
     }
 
-    Item get(int u, int v){
-        return get(u - 1, v, 0, 0, size);
+    long long get(int u, int v){
+        return get(u, v, 0, 0, size);
     }
 };  
 
@@ -126,15 +103,13 @@ int main(){
         if (type){
             int l, r;
             cin >> l >> r;
-            SegTree::Item ans = st.get(l, r);
-            int res = 0;
-
-            res = ((l - 1) & 1 ? ans.odd - ans.even : ans.even - ans.odd);
+            l--;
             
-            cout << res << '\n';
+            cout << (l & 1 ? -st.get(l, r) : st.get(l, r)) << '\n';
         }else{
             int i, j;
             cin >> i >> j;
+            i--;
 
             st.set(i, j);
         }
