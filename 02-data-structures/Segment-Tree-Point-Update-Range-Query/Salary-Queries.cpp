@@ -127,7 +127,7 @@ int main(){
         
         query.push_back({temp == '?', a, b});
     }
-
+    
     SegTree st(allVals.size());
     
     sort(allVals.begin(), allVals.end());
