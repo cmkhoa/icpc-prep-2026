@@ -81,27 +81,7 @@ int main(){
     ios::sync_with_stdio(false);
     cin.tie(NULL);
 
-    int n, m;
-    cin >> n >> m;
-
-    SegTree st(n);
-
-    for (int i = 0; i < n; i++){
-        cin >> a[i];
-    }
-
-    st.build();
-
-    while(m--){
-        int type, x, y;
-        cin >> type >> x >> y;
-
-        if (type == 1){
-            st.set(x, y);
-        }else{
-            cout << st.get(x, y) << '\n';
-        }
-    }
+    cout << 'z' - 'a' + 1 << '\n';
 
     return 0;
 }
