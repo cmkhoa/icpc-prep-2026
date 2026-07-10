@@ -81,7 +81,17 @@ int main(){
     ios::sync_with_stdio(false);
     cin.tie(NULL);
 
-    cout << 'z' - 'a' + 1 << '\n';
+    for (int i = 0; i <= 10; i++){
+        cout << i << " : " << bitset<5>(i) << '\n';
+    }
+
+    int n = 10;
+    cout << n << " : ";
+    for (int i = n; i > 0; i = (i - 1) & n){
+        cout << i << ' ';
+    }
+
+    cout << '\n' << (10 & 6);
 
     return 0;
 }

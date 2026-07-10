@@ -11,17 +11,19 @@ struct SegTree{
     vector<long long> nodes;
 
     SegTree(int n){
-        size = 1;
-        while(size < n){
-            size *= 2;
-        }
+        // size = 1;
+        // while(size < n){
+        //     size *= 2;
+        // }
 
-        nodes.assign(2 * size, 0);
+        // nodes.assign(2 * size, 0);
+        size = n;
+        nodes.assign(4 * size, 0);
     }
 
     void build(int id, int l, int r){
         if (r - l == 1){
-            if (l < N) nodes[id] = a[l];
+            nodes[id] = a[l];
             return;
         }
 
