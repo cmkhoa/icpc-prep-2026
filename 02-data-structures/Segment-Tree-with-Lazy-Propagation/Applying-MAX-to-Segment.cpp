@@ -1,11 +1,11 @@
-// https://codeforces.com/edu/course/2/lesson/5/1/practice/contest/279634/problem/A
+// https://codeforces.com/edu/course/2/lesson/5/1/practice/contest/279634/problem/B
 
 #include <bits/stdc++.h>
 using namespace std;
 
 struct SegTree{
     int size = 0;
-    vector<long long> nodes;
+    vector<int> nodes;
 
     SegTree(int n){
         size = 1;
@@ -21,7 +21,7 @@ struct SegTree{
 
         if (l >= u && r <= v){
             // cout << "[" << l << " " << r << "), ";
-            nodes[id] += val;
+            nodes[id] = max(nodes[id], val);
             return;
         }
 
@@ -35,7 +35,7 @@ struct SegTree{
         add(u, v, val, 0, 0, size);
     }
 
-    long long get(int pos, int id, int l, int r){
+    int get(int pos, int id, int l, int r){
         if (pos < l || pos >= r){
             return 0;
         }
@@ -46,10 +46,10 @@ struct SegTree{
 
         int mid = (l + r) >> 1;
         
-        return get(pos, 2 * id + 1, l, mid) + get(pos, 2 * id + 2, mid, r) + nodes[id];
+        return max({get(pos, 2 * id + 1, l, mid), get(pos, 2 * id + 2, mid, r), nodes[id]});
     }
 
-    long long get(int pos){
+    int get(int pos){
         return get(pos, 0, 0, size); 
     }
 };

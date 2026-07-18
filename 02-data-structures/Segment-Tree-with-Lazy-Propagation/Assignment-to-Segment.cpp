@@ -1,27 +1,27 @@
-// https://codeforces.com/edu/course/2/lesson/5/1/practice/contest/279634/problem/A
+// https://codeforces.com/edu/course/2/lesson/5/1/practice/contest/279634/problem/C
 
 #include <bits/stdc++.h>
 using namespace std;
 
 struct SegTree{
     int size = 0;
-    vector<long long> nodes;
+    vector<pair<int ,int>> nodes;
 
     SegTree(int n){
         size = 1;
         while(size < n) size *= 2;
 
-        nodes.assign(2 * size, 0);
+        nodes.assign(2 * size, {INT_MAX, 0});
     }
 
-    void add(int u, int v, int val, int id, int l, int r){
+    void add(int u, int v, pair<int, int> val, int id, int l, int r){
         if (r <= u || l >= v){
             return;
         }
 
         if (l >= u && r <= v){
             // cout << "[" << l << " " << r << "), ";
-            nodes[id] += val;
+            nodes[id] = val;
             return;
         }
 
@@ -31,13 +31,13 @@ struct SegTree{
         add(u, v, val, 2 * id + 2, mid, r);
     }
 
-    void add(int u, int v, int val){
+    void add(int u, int v, pair<int, int> val){
         add(u, v, val, 0, 0, size);
     }
 
-    long long get(int pos, int id, int l, int r){
+    pair<int, int> get(int pos, int id, int l, int r){
         if (pos < l || pos >= r){
-            return 0;
+            return {INT_MAX, 0};
         }
 
         if (r - l == 1){
@@ -46,11 +46,11 @@ struct SegTree{
 
         int mid = (l + r) >> 1;
         
-        return get(pos, 2 * id + 1, l, mid) + get(pos, 2 * id + 2, mid, r) + nodes[id];
+        return min({get(pos, 2 * id + 1, l, mid), get(pos, 2 * id + 2, mid, r), nodes[id]});
     }
 
     long long get(int pos){
-        return get(pos, 0, 0, size); 
+        return get(pos, 0, 0, size).second; 
     }
 };
 
@@ -71,7 +71,7 @@ int main(){
             int l, r, v;
             cin >> l >> r >> v;
 
-            st.add(l, r, v);
+            st.add(l, r, {m, v});
         }else{
             int pos;
             cin >> pos;
